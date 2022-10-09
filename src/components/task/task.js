@@ -1,4 +1,5 @@
 import './task.css'
+import { formatDistanceToNow } from 'date-fns'
 
 function Task(props) {
   if (props.description === 'Editing task') {
@@ -8,7 +9,7 @@ function Task(props) {
         <input className="toggle" type="checkbox" />
         <label>
           <span className="description">{props.description}</span>
-          <span className="created">created {props.created} ago</span>
+          <span className="created">created {formatDistanceToNow(new Date())} ago</span>
         </label>
         <button className="icon icon-edit"></button>
         <button className="icon icon-destroy"></button>
@@ -23,7 +24,7 @@ function Task(props) {
         <input className="toggle" type="checkbox" />
         <label>
           <span className="description">{props.description}</span>
-          <span className="created">created {props.created} ago</span>
+          <span className="created">created {formatDistanceToNow(new Date())} ago</span>
         </label>
         <button className="icon icon-edit"></button>
         <button className="icon icon-destroy"></button>
