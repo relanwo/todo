@@ -1,3 +1,4 @@
+import React from "react"
 import { Component } from 'react'
 
 import './task.css'
@@ -49,7 +50,7 @@ export default class Task extends Component {
         <input className="toggle" type="checkbox" />
         <label>
           <span className="description">{itemProps.text}</span>
-          <span className="created">created {formatDistanceToNow(new Date())} ago</span>
+          <span className="created">created {formatDistanceToNow(itemProps.created, {includeSeconds: true})} ago</span>
         </label>
       </div>
       <input type="text" className="edit" value={itemProps.text}></input>
