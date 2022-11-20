@@ -1,78 +1,48 @@
 import React from "react"
 import { Component } from 'react'
-
-import './task.css'
+import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns'
 
+import './task.css'
+
 export default class Task extends Component {
-	// state = {
-	// 	fieldClass: 'active',
-	// };
 
-  // onDone = () => {
-  //   this.setState(({fieldClass}) => {
-  //     if (fieldClass === 'active') {
-  //       return {
-  //         fieldClass: 'completed'
-  //       }
-  //     } 
-  //     else {
-  //       return {
-  //         fieldClass: 'active'
-  //       }        
-  //     }
-  //   })
-  // }
+  static defaultProps = {
+    onDeleted: () => {},
+    onToggleEdit: () => {},
+    onToggleDone: () => {},
+  }
 
-  // onEdit = () => {
-  //   this.setState(({fieldClass}) => {
-  //     if (fieldClass === 'active') {
-  //       return {
-  //         fieldClass: 'editing'
-  //       }
-  //     } 
-  //     else {
-  //       return {
-  //         fieldClass: 'active'
-  //       }        
-  //     }
-  //   })
-  // }
+  static propTypes = {
+    fieldClass: PropTypes.oneOf(['active', 'editing', 'completed']),
+    // timer
+    itemProps: PropTypes.array
+  }
 
   render() {
-    const { onDeleted, onToggleEdit, onToggleDone, fieldClass, ...itemProps } = this.props;
-    // const { fieldClass } = this.state
+    const { onDeleted, onToggleEdit, onToggleDone, fieldClass, timer, id, ...itemProps } = this.props;
 
-    if (fieldClass === 'editing') {
+    let input
+    fieldClass === 'editing' 
+      ? input = <input type="text" className="edit" defaultValue={itemProps.text}></input>
+      : input = ''
+
     return (
-      <li className={fieldClass} key={itemProps.id}>
-      <div className="view">
-        <input className="toggle" type="checkbox" />
-        <label>
-          <span className="description">{itemProps.text}</span>
-          <span className="created">created {formatDistanceToNow(itemProps.created, {includeSeconds: true})} ago</span>
-        </label>
-      </div>
-      <input type="text" className="edit" value={itemProps.text}></input>
-      </li>
-      );
-    }
-    return (
-      <li className={fieldClass} key={itemProps.id}>
+      <li className={fieldClass} key={id}>
         <div className="view">
           <input 
             className="toggle" 
             type="checkbox" 
-            // onClick={this.onDone}
             onClick={onToggleDone}
           />
           <label>
             <span className="description">{itemProps.text}</span>
-            <span className="created">created {formatDistanceToNow(new Date())} ago</span>
+            {/* <span className="created">created {formatDistanceToNow(new Date())} ago</span> */}
+            {/* <span className="created">created {setInterval(formatDistanceToNow(Date.now() - +itemProps.created, {includeSeconds: true}), 10000)} ago</span> */}
+            <span className="created">created {timer} ago</span>
           </label>
           <button 
             className="icon icon-edit"
-            // onClick={this.onEdit}
             onClick={onToggleEdit}
           ></button>
           <button 
@@ -80,6 +50,7 @@ export default class Task extends Component {
             onClick={onDeleted}
           ></button>
         </div>
+        { input }
       </li>
     );
   }

@@ -1,8 +1,17 @@
-import React from "react"
+import React from "react";
+import PropTypes from 'prop-types';
+
 import './footer.css'
 import TaskFilter from '../task-filter';
 
 function Footer({ toDo, onCompletedDeleted, filter, onFilterChange}) {
+
+  Footer.propTypes = {
+    toDo: PropTypes.number,
+    onCompletedDeleted: PropTypes.func,
+    filter: PropTypes.oneOf(['all', 'active', 'completed']),
+    onFilterChange: PropTypes.func
+  }
 
   return (
     <footer className="footer">

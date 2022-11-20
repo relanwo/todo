@@ -4,6 +4,11 @@ import './new-task-form.css';
 
 export default class NewTaskForm extends Component {
 
+  static defaultProps = {
+    onLabelChange: () => {},
+    onSubmit: () => {}
+  }
+
   state = {
     label: ''
   }
@@ -32,7 +37,6 @@ export default class NewTaskForm extends Component {
         <h1>todos</h1>
         <input 
           className="new-todo" 
-          // onClick={() => this.props.onItemAdded('hi bitch')}
           onChange={this.onLabelChange}
           onKeyDown={this.onSubmit}
           placeholder="What needs to be done?" 

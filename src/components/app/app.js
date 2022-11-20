@@ -4,7 +4,6 @@ import { Component } from 'react';
 import './app.css';
 
 import NewTaskForm from '../new-task-form/new-task-form';
-// import Main from '../main/main';
 import TaskList from '../task-list/task-list'
 import Footer from '../footer/footer';
 
@@ -22,6 +21,7 @@ export default class App extends Component {
       // { fieldClass: 'active', description: 'Active task', created: '5 minutes', id: 3 },
     ],
     filter: 'all', //all, active, completed
+    timer: ''
   };
 
   createTodoItem(text) {
@@ -158,9 +158,11 @@ export default class App extends Component {
   onFilterChange = (filter) => {
     this.setState({filter})
   }
+
+  // setInterval(this.refreshTime, 10000);
           
   render() {
-    const { todoData, filter } = this.state
+    const { todoData, filter, timer } = this.state
 
     const visibleItems = this.filter(todoData, filter)
 
@@ -181,6 +183,7 @@ export default class App extends Component {
             onDeleted={ this.deleteItem }
             onToggleEdit={ this.onToggleEdit }
             onToggleDone={ this.onToggleDone }
+            timer={ timer }
           />
           <Footer 
             toDo={ todoCount } 
