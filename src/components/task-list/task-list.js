@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 import Task from '../task'
 import './task-list.css'
 
-const TaskList = ({ todos, onDeleted, onToggleEdit, onToggleDone, timer }) => {
+const TaskList = ({ todos, onDeleted, onToggleEdit, onToggleDone, onSubmit }) => {
 
   TaskList.defaultProps = {
     onDeleted: () => {},
     onToggleEdit: () => {},
     onToggleDone: () => {},
+    onSubmit: () => {},
   }
 
   TaskList.propTypes = {
     toDos: PropTypes.array,
-    // timer
   }
 
   const elements = todos.map((item) => {
@@ -22,10 +22,12 @@ const TaskList = ({ todos, onDeleted, onToggleEdit, onToggleDone, timer }) => {
       return (
           <Task 
             { ...itemProps}
+            key={id}
+            id={id}
             onDeleted={() => onDeleted(id)}
             onToggleEdit={() => onToggleEdit(id)}
             onToggleDone={() => onToggleDone(id)}
-            timer={ timer }
+            onSubmit={onSubmit}
           />
       );
     });

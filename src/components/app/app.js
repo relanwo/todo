@@ -1,5 +1,6 @@
 import React from "react"
 import { Component } from 'react';
+import { formatDistanceToNow } from 'date-fns'
 
 import './app.css';
 
@@ -13,22 +14,22 @@ export default class App extends Component {
 
   state = {
     todoData: [
-      this.createTodoItem('sdfghjkl'),
-      this.createTodoItem('00-0-0-0=-'),
-      this.createTodoItem('uuuuuuuuuuuu'),
-      // { fieldClass: 'completed', text: 'Completed task', created: '17 seconds', id: 1 },
-      // { fieldClass: 'editing', description: 'Editing task', created: '5 seconds', id: 2 },
-      // { fieldClass: 'active', description: 'Active task', created: '5 minutes', id: 3 },
+      this.createTodoItem('sample task 1', '1669190980663'),
+      this.createTodoItem('sample task 2', '1669190480369'),
+      this.createTodoItem('sample task 3', '1669190450769'),
     ],
-    filter: 'all', //all, active, completed
+    filter: 'all', 
     timer: ''
   };
 
-  createTodoItem(text) {
+  createTodoItem(text, created) {
+    const timeGone = formatDistanceToNow(+created, [{includeSeconds: true}, { addSuffix: true }])
+
     return {
       text,
       fieldClass: 'active',
-      created: new Date(),
+      created,
+      timeGone: timeGone,
       id: this.maxId++
     }
   }
@@ -49,7 +50,7 @@ export default class App extends Component {
 
   addItem = (text) => {
     // generate id
-    const newItem = this.createTodoItem(text)
+    const newItem = this.createTodoItem(text, Number(new Date()))
 
     // add item
     this.setState(({ todoData }) => {
@@ -81,53 +82,34 @@ export default class App extends Component {
   }
 
   onToggleDone = (id) => {
-    // console.log('onToggleDone', id)
     this.setState(({ todoData }) => {
       return {
         todoData: this.toggleProperty(todoData, id, 'completed')
       }
     })
-    // this.setState(({todoData}) => {
-    //   const idx = todoData.findIndex((el) => el.id === id)
-
-    //   const oldItem = todoData[idx]
-    //   const toggledClass = oldItem.fieldClass === 'active' ? 'completed' : 'active'
-    //   const newItem = {...oldItem, fieldClass: toggledClass}
-
-    //   const newArray = [ 
-    //     ...todoData.slice(0, idx), 
-    //     newItem,
-    //     ...todoData.slice(idx + 1)
-    //   ]
-    //   return {
-    //     todoData: newArray
-    //   }
-    // })
   }
 
   onToggleEdit = (id) => {
-    // console.log('onToggleEdit', id)
     this.setState(({ todoData }) => {
       return {
         todoData: this.toggleProperty(todoData, id, 'editing')
       }
     })
-    // this.setState(({todoData}) => {
-    //   const idx = todoData.findIndex((el) => el.id === id)
+  }
 
-    //   const oldItem = todoData[idx]
-    //   const toggledClass = oldItem.fieldClass === 'active' ? 'editing' : 'active'
-    //   const newItem = {...oldItem, fieldClass: toggledClass}
-
-    //   const newArray = [ 
-    //     ...todoData.slice(0, idx), 
-    //     newItem,
-    //     ...todoData.slice(idx + 1)
-    //   ]
-    //   return {
-    //     todoData: newArray
-    //   }
-    // })
+  onSubmit = (id, text) => {
+    this.setState(({todoData}) => {
+      const newArr = todoData.map((item) => {
+        const newItem = item
+        if (item.id === id) {
+          newItem.text = text
+        }
+        return newItem
+      })
+      return {
+        todoData: newArr
+      }
+    })
   }
 
   onCompletedDeleted = () => {
@@ -141,35 +123,46 @@ export default class App extends Component {
   filter(items, filter) {
     switch(filter) {
       case 'all':
-        // console.log('a')
         return items;
       case 'active':
-        // console.log(items.filter((item) => item.fieldClass === 'active'))
         return items.filter((item) => item.fieldClass === 'active')
       case 'completed':
-        // console.log(items.filter((item) => item.fieldClass === 'completed'))
         return items.filter((item) => item.fieldClass === 'completed')
       default:
-        // console.log('d')
         return items;
       }
-    };
+  };
   
   onFilterChange = (filter) => {
     this.setState({filter})
   }
 
-  // setInterval(this.refreshTime, 10000);
+  changeDateDistance = () => {
+    this.setState(() => {
+      const { todoData } = this.state;
+      const newArr = todoData.map((elem) => {
+        const newElem = elem;
+        const distance = formatDistanceToNow(new Date(+newElem.created), [{includeSeconds: true}, { addSuffix: true }]);
+
+        newElem.timeGone = distance;
+        return newElem;
+      });
+      return { todoData: newArr };
+    });
+  };
           
   render() {
-    const { todoData, filter, timer } = this.state
+    const { todoData, filter } = this.state
 
     const visibleItems = this.filter(todoData, filter)
 
-    const doneCount = todoData.filter((el) => {
-      return el.fieldClass === 'completed'
+    const todoCount = todoData.filter((el) => {
+      return el.fieldClass !== 'completed'
     }).length;
-    const todoCount = todoData.length - doneCount
+
+    setInterval(() => {
+      this.changeDateDistance();
+    }, 10000);
 
     return (
       <section className="todoapp">
@@ -183,7 +176,7 @@ export default class App extends Component {
             onDeleted={ this.deleteItem }
             onToggleEdit={ this.onToggleEdit }
             onToggleDone={ this.onToggleDone }
-            timer={ timer }
+            onSubmit={ this.onSubmit }
           />
           <Footer 
             toDo={ todoCount } 

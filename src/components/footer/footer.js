@@ -19,11 +19,6 @@ function Footer({ toDo, onCompletedDeleted, filter, onFilterChange}) {
       <TaskFilter 
         filter={ filter }
         onFilterChange={onFilterChange} />
-      {/* <ul className="filters"> */}
-        {/* <TaskFilter class={'selected'} innerText={'All'}/>
-        <TaskFilter innerText={'Active'}/>
-        <TaskFilter innerText={'Completed'}/> */}
-      {/* </ul> */}
       <button 
         className="clear-completed"
         onClick={ onCompletedDeleted }

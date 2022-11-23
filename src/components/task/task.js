@@ -1,7 +1,6 @@
 import React from "react"
 import { Component } from 'react'
 import PropTypes from 'prop-types';
-import { formatDistanceToNow } from 'date-fns'
 
 import './task.css'
 
@@ -11,24 +10,40 @@ export default class Task extends Component {
     onDeleted: () => {},
     onToggleEdit: () => {},
     onToggleDone: () => {},
+    onSubmit: () => {},
   }
 
   static propTypes = {
     fieldClass: PropTypes.oneOf(['active', 'editing', 'completed']),
-    // timer
-    itemProps: PropTypes.array
+    itemProps: PropTypes.array,
+    id: PropTypes.number,
+  }
+
+  onValueChange = (e) => {
+    this.setState({
+      value: e.target.value
+    })
   }
 
   render() {
-    const { onDeleted, onToggleEdit, onToggleDone, fieldClass, timer, id, ...itemProps } = this.props;
+    const { onDeleted, onToggleEdit, onToggleDone, fieldClass, id, onSubmit, ...itemProps } = this.props;
 
     let input
     fieldClass === 'editing' 
-      ? input = <input type="text" className="edit" defaultValue={itemProps.text}></input>
+      ? input = (<input type="text" className="edit" autoFocus
+                        defaultValue={itemProps.text}
+                        onChange={this.onValueChange}
+                        onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          onSubmit(id, e.target.value)
+                          onToggleEdit(id)
+                        }
+                        }} >
+                </input>)
       : input = ''
 
     return (
-      <li className={fieldClass} key={id}>
+      <li className={fieldClass}>
         <div className="view">
           <input 
             className="toggle" 
@@ -37,9 +52,7 @@ export default class Task extends Component {
           />
           <label>
             <span className="description">{itemProps.text}</span>
-            {/* <span className="created">created {formatDistanceToNow(new Date())} ago</span> */}
-            {/* <span className="created">created {setInterval(formatDistanceToNow(Date.now() - +itemProps.created, {includeSeconds: true}), 10000)} ago</span> */}
-            <span className="created">created {timer} ago</span>
+            <span className="created">created {itemProps.timeGone} ago</span>
           </label>
           <button 
             className="icon icon-edit"

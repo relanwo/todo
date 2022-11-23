@@ -47,9 +47,3 @@ export default class TaskFilter extends Component{
     );
   }
 }
-
-      // <ul className="filters">
-      //     <TaskFilter class={'selected'} innerText={'All'}/>
-      //     <TaskFilter innerText={'Active'}/>
-      //     <TaskFilter innerText={'Completed'}/>
-      // </ul>
